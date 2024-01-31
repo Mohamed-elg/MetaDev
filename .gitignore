@@ -1,0 +1,7 @@
+gitlab/config/s*
+gitlab/config/i*
+gitlab/config/trusted-certs
+gitlab/config/*json
+gitlab/data
+gitlab/logs
+ldap
