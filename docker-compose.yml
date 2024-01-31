@@ -12,7 +12,7 @@ services:
       - "./gitlab/config:/etc/gitlab"
       - "./gitlab/logs:/var/log/gitlab"
       - "./gitlab/data:/var/opt/gitlab"
-    shm_size: "512m"
+    shm_size: "512pm"
     depends_on:
       - ldap
 
@@ -51,6 +51,14 @@ services:
       - SQLITE_DATABASE=nextcloud
       - SQLITE_USER=nextcloud
       - SQLITE_PASSWORD=admin
+      - LDAP_SERVER_HOST=ldap
+      - LDAP_SERVER_PORT=389
+      - LDAP_BASE=dc=example,dc=com # Replace with your LDAP base DN
+      - LDAP_USER_FILTER=(&(objectclass=inetOrgPerson)(uid=%uid))
+      - LDAP_USER_LOGIN_FILTER=(&(objectclass=inetOrgPerson)(uid=%uid))
+      - LDAP_BIND_TYPE=login
+      - LDAP_ADMIN_USERNAME=admin # LDAP bind DN
+      - LDAP_ADMIN_PASSWORD=admin
     depends_on:
       - ldap
 
