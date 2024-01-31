@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     hostname: "web-gitlab"
     ports:
-      - "80:80"
+      - "82:80"
       - "443:443"
       - "22:22"
     volumes:
@@ -43,7 +43,7 @@ services:
     container_name: nextcloud
     restart: unless-stopped
     ports:
-      - 8080:80
+      - 80801:80
     volumes:
       - ./cloud:/var/www/html
     environment:
