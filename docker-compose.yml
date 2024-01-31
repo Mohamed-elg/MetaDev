@@ -12,7 +12,7 @@ services:
       - "./gitlab/config:/etc/gitlab"
       - "./gitlab/logs:/var/log/gitlab"
       - "./gitlab/data:/var/opt/gitlab"
-    shm_size: "512pm"
+    shm_size: "512m"
     depends_on:
       - ldap
 
