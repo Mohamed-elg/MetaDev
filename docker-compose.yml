@@ -1,20 +1,7 @@
 version: "3.6"
 
 services:
-  web-gitlab:
-    image: "gitlab/gitlab-ee:latest"
-    restart: unless-stopped
-    hostname: "web-gitlab"
-    ports:
-      - "82:80"
-      - "2443:443"
-    volumes:
-      - "./gitlab/config:/etc/gitlab"
-      - "./gitlab/logs:/var/log/gitlab"
-      - "./gitlab/data:/var/opt/gitlab"
-    shm_size: "512m"
-    depends_on:
-      - ldap
+  # LDAP
 
   ldap:
     image: osixia/openldap
@@ -37,6 +24,25 @@ services:
     depends_on:
       - ldap
 
+  # GITLAB
+
+  web-gitlab:
+    image: "gitlab/gitlab-ee:latest"
+    restart: unless-stopped
+    hostname: "web-gitlab"
+    ports:
+      - "82:80"
+      - "2443:443"
+    volumes:
+      - "./gitlab/config:/etc/gitlab"
+      - "./gitlab/logs:/var/log/gitlab"
+      - "./gitlab/data:/var/opt/gitlab"
+    shm_size: "512m"
+    depends_on:
+      - ldap
+
+  # NEXTCLOUD
+
   nextcloud:
     image: nextcloud:latest
     container_name: nextcloud
@@ -51,6 +57,29 @@ services:
       - SQLITE_DATABASE=nextcloud
       - SQLITE_USER=nextcloud
       - SQLITE_PASSWORD=admin
+    depends_on:
+      - ldap
+
+  # REDMINE
+
+  redmine:
+    image: redmine
+    restart: always
+    ports:
+      - 3000:3000
+    environment:
+      REDMINE_DB_MYSQL: redmine_db
+      REDMINE_DB_PASSWORD: redmine
+      REDMINE_SECRET_KEY_BASE: supersecretkey
+    depends_on:
+      - ldap
+
+  redmine_db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: redmine
+      MYSQL_DATABASE: redmine
     depends_on:
       - ldap
 

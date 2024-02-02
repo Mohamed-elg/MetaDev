@@ -5,3 +5,4 @@ gitlab/config/*json
 gitlab/data
 gitlab/logs
 ldap
+moodle_data
