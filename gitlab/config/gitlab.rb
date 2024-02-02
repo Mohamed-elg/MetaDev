@@ -521,7 +521,7 @@ gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
      base: 'dc=example,dc=org'
 #     user_filter: ''
 #     ## EE only
-#     group_base: ''
+     group_base: 'cn=dev,dc=example,dc=org'
 #     admin_group: ''
 #     sync_ssh_keys: false
 #

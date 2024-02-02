@@ -1,6 +1,19 @@
 version: "3.6"
 
 services:
+  # REVERSE PROXY
+
+  nginx:
+    image: "jc21/nginx-proxy-manager:latest"
+    container_name: reverse-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "81:81"
+    volumes:
+      - ./proxy/data:/data
+      - ./proxy/letsencrypt:/etc/letsencrypt
   # LDAP
 
   ldap:
@@ -62,6 +75,35 @@ services:
     depends_on:
       - ldap
 
+  mariadb:
+    image: mariadb
+    volumes:
+      - ./moodle/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=moodle
+      - MYSQL_ROOT_USER=root
+      - MYSQL_DATABASE=moodle
+
+  # MOODLE
+
+  moodle:
+    image: bitnami/moodle:latest
+    ports:
+      - 9080:8080
+      - 9443:8443
+    environment:
+      - MOODLE_DATABASE_HOST=mariadb
+      - MOODLE_DATABASE_USER=root
+      - MOODLE_DATABASE_PASSWORD=moodle
+      - MOODLE_DATABASE_NAME=moodle
+      - PUID=998
+      - PGID=100
+    volumes:
+      - ./moodle/moodle:/bitnami/moodle
+      - ./moodle/moodleData:/bitnami/moodledata
+    depends_on:
+      - mariadb
+
   # REDMINE
 
   redmine:
@@ -85,7 +127,3 @@ services:
       MYSQL_DATABASE: redmine
     depends_on:
       - ldap
-
-volumes:
-  ldap_data:
-  ldap_config:
