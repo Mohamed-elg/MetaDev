@@ -75,6 +75,7 @@ services:
       REDMINE_SECRET_KEY_BASE: supersecretkey
     depends_on:
       - ldap
+      - redmine_db
 
   redmine_db:
     image: mysql:8.0
