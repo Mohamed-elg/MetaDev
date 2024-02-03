@@ -75,19 +75,19 @@ services:
     depends_on:
       - ldap
 
+  # MOODLE
   mariadb:
     image: mariadb
+    restart: unless-stopped
     volumes:
       - ./moodle/db:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=moodle
       - MYSQL_ROOT_USER=root
       - MYSQL_DATABASE=moodle
-
-  # MOODLE
-
   moodle:
     image: bitnami/moodle:latest
+    restart: unless-stopped
     ports:
       - 9080:8080
       - 9443:8443
@@ -103,6 +103,29 @@ services:
       - ./moodle/moodleData:/bitnami/moodledata
     depends_on:
       - mariadb
+
+  # VPN
+
+  wg:
+    image: ngoduykhanh/wireguard-ui:latest
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 5000:5000
+      - 51820:51820
+    environment:
+      - WGUI_USERNAME=admin
+      - WGUI_PASSWORD=admin
+      - WGUI_DNS=192.168.2.1
+      - WGUI_MANAGE_START=false
+      - WGUI_MANAGE_RESTART=false
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    volumes:
+      - ./vpn/db:/app/db
+      - ./vpn/wireguard:/etc/wireguard
 
   # REDMINE
 
